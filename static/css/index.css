@@ -1,0 +1,278 @@
+/* Importação de fontes (opcional, mas adiciona estilo) */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+
+
+/* Estilos Gerais */
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-background-light-index);
+    color: var(--color-text-dark);
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px;
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-primary-burgundy);
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--color-secondary-gold);
+    text-decoration: underline;
+}
+
+/* Header */
+.header {
+    background-color: var(--color-primary-burgundy);
+    color: var(--color-text-light);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
+}
+
+.header-left, .header-right {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px; /* Espaçamento em telas pequenas */
+}
+
+.header-center {
+    flex-grow: 1; /* Permite que o centro ocupe o espaço restante */
+    text-align: center;
+    margin-bottom: 5px; /* Espaçamento em telas pequenas */
+}
+
+.store-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2em;
+    font-weight: 700;
+    color: var(--color-text-light);
+    text-decoration: none;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.category-select {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: 1px solid var(--color-secondary-gold);
+    background-color: var(--color-text-light);
+    color: var(--color-text-dark);
+    font-size: 1em;
+    cursor: pointer;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+}
+
+.category-select:focus {
+    outline: none;
+    border-color: var(--color-primary-burgundy);
+    box-shadow: 0 0 0 3px rgba(85, 13, 13, 0.2);
+}
+
+.icon-link {
+    color: var(--color-text-light);
+    font-size: 1.5em;
+    margin-left: 20px;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.icon-link:hover {
+    color: var(--color-secondary-gold);
+    transform: translateY(-2px);
+}
+
+/* Título da Página (para index.html) */
+.page-title {
+    font-family: 'Playfair Display', serif;
+    text-align: center;
+    color: var(--color-primary-burgundy);
+    margin: 50px 0 40px;
+    font-size: 3em;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    border-bottom: 2px solid var(--color-secondary-gold);
+    padding-bottom: 15px;
+    display: inline-block; /* Para o border-bottom ajustar ao texto */
+    width: 100%;
+}
+
+/* Grid de Produtos */
+.product-grid {
+    display: grid;
+    /* Adapta-se para ter um card por linha em telas pequenas, e múltiplos em telas maiores */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 20px 0;
+    /* Centraliza a grade quando há poucos itens para preencher toda a largura */
+    justify-content: center;
+}
+
+.product-item {
+    background-color: #fff;
+    border: 1px solid var(--color-border-light-index);
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.product-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+.product-image {
+    width: 100%;
+    height: 250px; /* Altura fixa para as imagens */
+    object-fit: cover;
+    border-bottom: 1px solid var(--color-border-light-index);
+    display: block; /* Remove espaço extra abaixo da imagem */
+}
+
+.product-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6em;
+    color: var(--color-primary-burgundy);
+    margin: 18px 18px 10px;
+    flex-grow: 1;
+    text-align: center;
+}
+
+.product-description {
+    font-size: 0.9em;
+    color: #666;
+    margin: 0 18px 12px;
+    line-height: 1.5;
+    text-align: center;
+}
+
+.product-price {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.7em;
+    color: var(--color-success);
+    font-weight: 700;
+    margin: 10px 18px 20px;
+    text-align: center;
+}
+
+.product-details-button {
+    display: block;
+    background-color: var(--color-secondary-gold);
+    color: var(--color-text-light);
+    padding: 14px 0;
+    text-align: center;
+    border-radius: 0 0 10px 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    margin-top: auto; /* Empurra o botão para baixo */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.product-details-button:hover {
+    background-color: #a37209; /* Um dourado um pouco mais escuro no hover */
+    text-decoration: none;
+    transform: scale(1.01);
+}
+
+.no-products-message {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+    grid-column: 1 / -1;
+    padding: 30px;
+    background-color: #fff3cd; /* cor de alerta do Bootstrap */
+    border: 1px solid #ffc107;
+    border-radius: 8px;
+    margin-top: 30px;
+    font-size: 1.1em;
+}
+
+/* Footer */
+footer {
+    background-color: var(--color-primary-burgundy);
+    color: var(--color-text-light);
+    text-align: center;
+    padding: 25px 0;
+    margin-top: 60px;
+    width: 100%;
+    box-shadow: 0 -3px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 992px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+    }
+    .header-left, .header-right, .header-center {
+        margin-bottom: 10px;
+        text-align: center;
+        justify-content: center; /* Centraliza itens flex */
+    }
+    .category-select {
+        width: 80%;
+        margin: 0 auto; /* Centraliza o select */
+    }
+    .icon-link {
+        margin: 0 15px;
+    }
+    .store-name {
+        font-size: 1.8em;
+    }
+    .page-title {
+        font-size: 2.2em;
+        margin: 40px 0 30px;
+    }
+    .product-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+    .product-image {
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    .product-grid {
+        grid-template-columns: 1fr; /* Uma coluna em telas menores */
+    }
+    .page-title {
+        font-size: 1.8em;
+        margin: 30px 0 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .store-name {
+        font-size: 1.5em;
+    }
+    .icon-link {
+        font-size: 1.2em;
+        margin: 0 10px;
+    }
+    .product-name {
+        font-size: 1.4em;
+    }
+    .product-price {
+        font-size: 1.5em;
+    }
+}
