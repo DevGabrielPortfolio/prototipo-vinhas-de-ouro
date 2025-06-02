@@ -1,4 +1,4 @@
-from app_webService.data.conection import Conection
+from data.conection import Conection
 from mysql.connector import Error
 from werkzeug.security import generate_password_hash, check_password_hash
 

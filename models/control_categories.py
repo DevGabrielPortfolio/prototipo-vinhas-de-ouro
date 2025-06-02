@@ -1,6 +1,6 @@
 # app_webService/models/categories.py
 
-from app_webService.data.conection import Conection
+from data.conection import Conection
 from mysql.connector import Error
 
 class Categories:

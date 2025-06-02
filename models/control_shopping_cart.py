@@ -1,6 +1,6 @@
 # app_webService/data/ControlShoppingCart.py (ou o nome do seu arquivo de modelo)
 
-from app_webService.data.conection import Conection # Ou apenas from data.conection import Conection, dependendo da sua estrutura
+from data.conection import Conection # Ou apenas from data.conection import Conection, dependendo da sua estrutura
 from mysql.connector import Error # Para tratamento de erros do MySQL
 
 class ControlShoppingCart:

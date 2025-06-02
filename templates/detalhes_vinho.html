@@ -20,16 +20,7 @@
 </head>
 <body>
     <header class="header">
-        <div class="header-left">
-            <form action="/adicionar_ao_carrinho" method="get">
-                <select name="categoria" class="category-select">
-                    <option value="all" selected>Todas as Categorias</option>
-                    {# Como não estamos usando layout.html, 'categorias' deve ser passada para a rota que renderiza esta página #}
-                    {% for id_categoria, nome in categorias %}
-                        <option value="{{ id_categoria }}">{{ nome }}</option>
-                    {% endfor %}
-                </select></form>
-        </div><div class="header-center">
+        <div class="header-center">
             <a href="{{ url_for('main_page') }}" class="store-name">Les Vignes d’Or</a>
         </div><div class="header-right">
             {# Lógica para trocar o ícone e link de usuário/saída (copiado do seu index.html) #}
@@ -87,7 +78,56 @@
                 </div>
             </div>
         </div>
-    </main><footer>
+
+
+
+    {% if 'user_id' in session %}
+        <div class="container-form">
+            <form action="/post/cadastrarmensagem" method="POST" class="formatacao-form">
+
+                <input type="hidden" name="id_produto" value="{{ id_produto }}">
+
+                <div class="input-group">
+                    <label for="comentario">Comentário</label>
+                    <textarea id="comentario" name="comentario" placeholder="Digite o seu comentário" required style="height: 143px; resize: none;"></textarea>
+                </div>
+
+                <button type="submit">Enviar</button>
+
+            </form>
+        </div>
+    {% else %}
+        <div class="alert alert-warning mt-3" role="alert" style="max-width: 600px;">
+            Você precisa <a href="{{ url_for('login') }}" class="alert-link">estar logado</a> para comentar.
+        </div>
+    {% endif %}
+
+    <hr>
+
+    <!-- Exibição dos comentários -->
+    <div class="comentarios">
+        <h3>Comentários</h3>
+
+        {% if comentarios %}
+            {% for comentario in comentarios %}
+                <div class="comentario-item" style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                    <p><strong>{{ comentario.usuario }}</strong> comentou em {{ comentario.data_comentario.strftime('%d/%m/%Y %H:%M') }}:</p>
+                    <p>{{ comentario.comentario }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Seja o primeiro a comentar!</p>
+        {% endif %}
+    </div>
+
+
+
+
+
+
+
+    </main>
+    <footer>
         <p>&copy; 2025 Les Vignes d’Or. Todos os direitos reservados.</p>
     </footer>
 

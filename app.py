@@ -1,9 +1,11 @@
 from flask import Flask, render_template, redirect, request, flash, url_for, get_flashed_messages, session
 
-from app_webService.models.control_categories import Categories
-from app_webService.models.control_wines import Wines
-from app_webService.models.control_users import Users
-from app_webService.models.control_shopping_cart import ControlShoppingCart
+from models.control_categories import Categories
+from models.control_shopping_cart import ControlShoppingCart
+from models.control_users import Users
+from models.control_wines import Wines
+from models.control_comentario import Comments
+
 
 from functools import wraps
 
@@ -147,9 +149,17 @@ def detalhes_vinho(vinho_id):
     print(f"DEBUG: Tentando buscar detalhes para o vinho_id = {vinho_id}")
     vinho = Wines.get_wine_by_id(vinho_id)
     if vinho:
-        categorias = Categories
-        categoria = categorias.get_all_categories()
-        return render_template('detalhes_vinho.html', vinho=vinho, categorias=categoria)
+        categorias = Categories.get_all_categories() # Ou apenas Categories se for uma classe estática
+
+        # CHAME A FUNÇÃO PARA BUSCAR OS COMENTÁRIOS AQUI
+        comentarios = Comments.get_comments_by_product_id(vinho_id)
+
+        # PASSE OS COMENTÁRIOS PARA O TEMPLATE
+        return render_template('detalhes_vinho.html', 
+                               vinho=vinho, 
+                               categorias=categorias, 
+                               comentarios=comentarios, # <--- ESSENCIAL
+                               id_produto=vinho_id) # Garante que o ID do produto está disponível para o formulário de comentário
     else:
         flash('Vinho não encontrado.', 'danger')
         return redirect(url_for('main_page'))
@@ -239,6 +249,29 @@ def atualizar_quantidade_carrinho():
             flash('Ocorreu um erro ao atualizar a quantidade do produto.', 'danger')
 
     return redirect(url_for('carrinho'))
+
+
+@app.route('/post/cadastrarmensagem', methods=['POST'])
+@login_required  # só permite quem está logado comentar
+def cadastrar_comentario():
+    id_usuario = session.get('user_id')
+    id_produto = request.form.get('id_produto', type=int)
+    comentario_texto = request.form.get('comentario', '').strip()
+
+    if not comentario_texto:
+        flash('O comentário não pode ser vazio.', 'warning')
+        return redirect(url_for('detalhes_vinho', vinho_id=id_produto))
+
+    sucesso = Comments.add_comment(id_usuario, id_produto, comentario_texto)
+
+    if sucesso:
+        flash('Comentário enviado com sucesso!', 'success')
+    else:
+        flash('Erro ao enviar o comentário. Tente novamente.', 'danger')
+
+    return redirect(url_for('detalhes_vinho', vinho_id=id_produto))
+
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8080, debug=True)
