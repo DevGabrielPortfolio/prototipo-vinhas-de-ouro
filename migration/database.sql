@@ -58,6 +58,9 @@ CREATE TABLE IF NOT EXISTS tb_comentarios (
     FOREIGN KEY (id_produto) REFERENCES tb_produtos (id_produto) ON DELETE CASCADE
 );
 
+ALTER TABLE tb_comentarios
+ADD COLUMN data_comentario DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
 -- 6. TABELA DE ENDEREÇOS
 -- Endereços dos usuários para entrega
 CREATE TABLE IF NOT EXISTS tb_enderecos (
@@ -217,7 +220,7 @@ INSERT INTO tb_imagens (id_produto, url) VALUES
 (22, 'https://www.wine-searcher.com/images/labels/26/47/10522647.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (23, 'https://www.wine-searcher.com/images/labels/37/62/11593762.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (24, 'https://www.wine-searcher.com/images/labels/53/32/11765332.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
-(25, 'https://www.wine-searcher.com/images/labels/65/78/11716578.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
+(25, 'https://www.garrafeiranacional.com/media/catalog/product/cache/e37fd98e323045f31cb97da19fc50468/6/1/6190744-0.jpg'),
 (26, 'https://www.wine-searcher.com/images/labels/89/35/11748935.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (27, 'https://www.wine-searcher.com/images/labels/50/84/11715084.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (28, 'https://www.wine-searcher.com/images/labels/84/85/11628485.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
@@ -227,7 +230,7 @@ INSERT INTO tb_imagens (id_produto, url) VALUES
 (32, 'https://www.wine-searcher.com/images/labels/67/23/10436723.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (33, 'https://www.wine-searcher.com/images/labels/58/95/11705895.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (34, 'https://www.wine-searcher.com/images/labels/90/23/10399023.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
-(35, 'https://www.wine-searcher.com/images/labels/47/61/10154761.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
+(35, 'https://worldwine.vtexassets.com/arquivos/ids/167524-1200-auto?v=638485315219500000&width=1200&height=auto&aspect=true'),
 (36, 'https://www.wine-searcher.com/images/labels/72/75/11667275.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (37, 'https://www.wine-searcher.com/images/labels/36/81/10513681.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
 (38, 'https://www.wine-searcher.com/images/labels/55/95/10155595.jpg?width=175&height=234&fit=bounds&canvas=180,240'),
