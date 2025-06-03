@@ -80,7 +80,7 @@
                     <p>Subtotal: <span>R$ {{ "%.2f"|format(total_carrinho) }}</span></p>
                     <p class="summary-total">Total: <span>R$ {{ "%.2f"|format(total_carrinho) }}</span></p>
                 </div>
-                <button type="button" class="btn btn-primary checkout-button">Finalizar Compra</button>
+                <button type="button" class="btn btn-primary checkout-button" onclick="window.location.href='{{ url_for('finalizar_compra', total=total_carrinho) }}'">Finalizar Compra</button>
             </div>
         </div>
     </div>

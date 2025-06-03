@@ -181,3 +181,19 @@ class ControlShoppingCart:
             if conn and conn.is_connected():
                 conn.close()
                 print("DEBUG_CSC: Conexão com DB fechada após atualizar quantidade.")
+
+
+    @staticmethod
+    def clear_cart(id_usuario):
+        try:
+            conn = Conection.create_conection() # Função para obter sua conexão com o DB
+            cursor = conn.cursor()
+            query = "DELETE FROM tb_itens_carrinho WHERE id_usuario = %s;" # Use %s ou ? dependendo do seu driver
+            cursor.execute(query, (id_usuario,))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return True
+        except Exception as e:
+            print(f"Erro ao limpar o carrinho para o usuário {id_usuario}: {e}")
+            return False

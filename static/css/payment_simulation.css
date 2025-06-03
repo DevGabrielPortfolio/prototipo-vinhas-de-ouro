@@ -1,0 +1,206 @@
+.payment-body {
+    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+    color: #333;
+}
+
+.payment-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-title {
+    text-align: center;
+    color: #5a2d2d;
+    margin-bottom: 30px;
+    font-weight: bold;
+}
+
+.order-summary-payment {
+    background-color: #e9ecef;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 30px;
+}
+
+.order-summary-payment p {
+    margin-bottom: 0;
+    font-size: 1.1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.total-amount {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #5a2d2d;
+}
+
+.section-title {
+    color: #5a2d2d;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    font-size: 1.3rem;
+}
+
+.section-subtitle { /* Novo estilo para o subtítulo "Itens no Pedido" */
+    color: #5a2d2d;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.15rem;
+    border-bottom: 1px dashed #ccc; /* Linha tracejada para separar */
+    padding-bottom: 8px;
+}
+
+.payment-method-selection .form-check {
+    margin-bottom: 15px;
+}
+
+.payment-method-selection .form-check-label {
+    font-size: 1.1rem;
+    color: #555;
+}
+
+.payment-method-selection .form-check-label i {
+    margin-right: 10px;
+    color: #5a2d2d;
+}
+
+.payment-form-section {
+    border: 1px solid #e0e0e0;
+    padding: 25px;
+    border-radius: 8px;
+    margin-top: 25px;
+    background-color: #fdfdfd;
+}
+
+.form-section-title {
+    color: #4a2424;
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+/* Estilos para a nova seção de itens do pedido */
+.payment-items-section {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.payment-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+}
+
+.payment-item:last-child {
+    border-bottom: none; /* Remove a borda do último item */
+}
+
+.payment-item .item-image {
+    width: 60px; /* Tamanho menor para a imagem */
+    height: 60px;
+    object-fit: cover;
+    margin-right: 15px;
+    border-radius: 4px;
+}
+
+.payment-item .item-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.payment-item .item-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 3px;
+}
+
+.payment-item .item-quantity-price {
+    color: #777;
+    font-size: 0.9rem;
+}
+
+.payment-item .item-subtotal {
+    font-weight: bold;
+    color: #5a2d2d;
+    font-size: 1rem;
+    margin-top: 5px;
+}
+
+.empty-order-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+    font-style: italic;
+}
+
+
+/* Pix specific styling */
+.text-center img {
+    max-width: 180px; /* Smaller QR code */
+    height: auto;
+    margin-bottom: 15px;
+}
+
+.input-group input[readonly] {
+    background-color: #f2f2f2;
+    cursor: text;
+}
+
+.pay-button {
+    width: 100%;
+    padding: 15px;
+    font-size: 1.3rem;
+    background-color: #28a745; /* Green for payment */
+    border-color: #28a745;
+    margin-top: 30px;
+}
+
+.pay-button:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.back-button-payment {
+    display: block; /* Make it block to take full width */
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+    background-color: #6c757d;
+    border-color: #6c757d;
+    color: #fff;
+    padding: 10px;
+}
+
+.back-button-payment:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+.payment-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    color: #777;
+    font-size: 0.9rem;
+    border-top: 1px solid #eee;
+}
+
+@media (max-width: 576px) {
+    .payment-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+    .payment-item .item-image {
+        width: 50px;
+        height: 50px;
+    }
+}

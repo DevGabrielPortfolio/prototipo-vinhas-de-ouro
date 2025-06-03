@@ -15,6 +15,10 @@ app.secret_key = 'sua_chave_secreta_super_segura_aqui_12345'
 
 
 def login_required(f):
+    """
+    Decorador para garantir que o usuário esteja logado para acessar certas rotas.
+    Redireciona para a página de login se o user_id não estiver na sessão.
+    """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'user_id' not in session:
@@ -27,14 +31,22 @@ def login_required(f):
 
 @app.route('/logout')
 def logout():
+    """
+    Rota para deslogar o usuário.
+    Remove o user_id e username da sessão e redireciona para a página principal.
+    """
     session.pop('user_id', None)
     session.pop('username', None)
-
+    flash('Você foi desconectado com sucesso.', 'success') # Adiciona uma mensagem de sucesso ao deslogar
     return redirect(url_for('main_page'))
 
 
 @app.route('/')
 def main_page():
+    """
+    Rota da página principal que exibe categorias e vinhos.
+    Permite filtrar vinhos por categoria.
+    """
     categorias = Categories.get_all_categories()
 
     category_id = request.args.get('categoria', type=int)
@@ -53,11 +65,18 @@ def main_page():
 
 @app.route('/configuracoes-conta')
 def create_acount():
+    """
+    Rota para a página de criação de conta/configurações.
+    """
     return render_template('create_acount.html')
 
 
 @app.route('/cadastrar_usuario', methods=['POST'])
 def register_user():
+    """
+    Rota para processar o cadastro de um novo usuário.
+    Valida senhas e dados de endereço antes de registrar.
+    """
     username = request.form['username']
     email = request.form['email']
     telefone = request.form['telefone']
@@ -111,22 +130,25 @@ def register_user():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Rota para a página de login e processamento do login.
+    Verifica as credenciais do usuário.
+    """
     if request.method == 'POST':
         login_input = request.form['username_or_email']
         password = request.form['password']
 
-        user_id = Users.verify_user_credentials(login_input, password)
+        login_info = Users.verify_user_credentials(login_input, password)
 
-        if user_id:
-            login_info = Users.verify_user_credentials(login_input, password)
-            if login_info:
-                user_id, username_from_db = login_info
-                session['user_id'] = user_id
-                session['username'] = username_from_db
-                return redirect(url_for('main_page'))
-            else:
-                flash('Credenciais inválidas. Verifique seu usuário/e-mail e senha.', 'danger')
-                return redirect(url_for('login'))
+        if login_info:
+            user_id, username_from_db = login_info
+            session['user_id'] = user_id
+            session['username'] = username_from_db
+            flash(f'Bem-vindo(a) de volta, {username_from_db}!', 'success') # Mensagem de sucesso no login
+            return redirect(url_for('main_page'))
+        else:
+            flash('Credenciais inválidas. Verifique seu usuário/e-mail e senha.', 'danger')
+            return redirect(url_for('login'))
     else:
         flashed_messages = get_flashed_messages(with_categories=True)
         return render_template('login_page.html', flashed_messages=flashed_messages)
@@ -135,10 +157,14 @@ def login():
 @app.route('/carrinho')
 @login_required
 def carrinho():
+    """
+    Rota para exibir o carrinho de compras do usuário logado.
+    """
     id_usuario = session['user_id']
-    if not id_usuario:
-        flash('Você precisa estar logado para ver seu carrinho.', 'danger')
-        return redirect(url_for('login'))
+    # A verificação de id_usuario já é feita pelo decorador login_required
+    # if not id_usuario:
+    #     flash('Você precisa estar logado para ver seu carrinho.', 'danger')
+    #     return redirect(url_for('login'))
 
     itens_carrinho = ControlShoppingCart.get_itens_carrinho_por_usuario(id_usuario)
     total_carrinho = sum(item['preco_unitario'] * item['quantidade'] for item in itens_carrinho)
@@ -146,10 +172,13 @@ def carrinho():
 
 @app.route('/vinho/<int:vinho_id>')
 def detalhes_vinho(vinho_id):
+    """
+    Rota para exibir os detalhes de um vinho específico, incluindo comentários.
+    """
     print(f"DEBUG: Tentando buscar detalhes para o vinho_id = {vinho_id}")
     vinho = Wines.get_wine_by_id(vinho_id)
     if vinho:
-        categorias = Categories.get_all_categories() # Ou apenas Categories se for uma classe estática
+        categorias = Categories.get_all_categories()
 
         # CHAME A FUNÇÃO PARA BUSCAR OS COMENTÁRIOS AQUI
         comentarios = Comments.get_comments_by_product_id(vinho_id)
@@ -158,34 +187,36 @@ def detalhes_vinho(vinho_id):
         return render_template('detalhes_vinho.html', 
                                vinho=vinho, 
                                categorias=categorias, 
-                               comentarios=comentarios, # <--- ESSENCIAL
-                               id_produto=vinho_id) # Garante que o ID do produto está disponível para o formulário de comentário
+                               comentarios=comentarios, 
+                               id_produto=vinho_id) 
     else:
         flash('Vinho não encontrado.', 'danger')
         return redirect(url_for('main_page'))
 
 
-# ...
 @app.route('/adicionar_ao_carrinho', methods=['POST'])
+@login_required # Garante que apenas usuários logados possam adicionar ao carrinho
 def adicionar_ao_carrinho():
+    """
+    Rota para adicionar ou atualizar um item no carrinho de compras.
+    """
     print(f"DEBUG_APP: Requisição POST recebida em /adicionar_ao_carrinho.")
-    print(f"DEBUG_APP: Dados do formulário: {request.form}") # ESTA É MUITO IMPORTANTE!
+    print(f"DEBUG_APP: Dados do formulário: {request.form}")
 
-    id_usuario = session.get('user_id') # Ou 1 para teste
+    id_usuario = session.get('user_id')
     print(f"DEBUG_APP: ID do usuário (da sessão): {id_usuario}")
 
-    produto_id = request.form.get('produto_id', type=int) # OU 'vinho_id' se o HTML ainda usa
+    produto_id = request.form.get('produto_id', type=int)
     quantidade = request.form.get('quantidade', type=int)
-    print(f"DEBUG_APP: Produto ID lido: {produto_id}, Quantidade lida: {quantidade}") # IMPORTANTE!
+    print(f"DEBUG_APP: Produto ID lido: {produto_id}, Quantidade lida: {quantidade}")
 
     if produto_id is None or quantidade is None or quantidade <= 0:
         print(f"DEBUG_APP: Validação falhou: produto_id={produto_id}, quantidade={quantidade}")
         flash('Dados inválidos para adicionar ao carrinho.', 'danger')
-        # ...
-        return redirect(url_for('main_page')) # Ou detalhes_vinho
+        return redirect(url_for('main_page')) # Redireciona para a página principal ou detalhes do vinho
 
     sucesso = ControlShoppingCart.adicionar_ou_atualizar_item(id_usuario, produto_id, quantidade)
-    print(f"DEBUG_APP: Retorno de ControlShoppingCart: {sucesso}") # CRÍTICO!
+    print(f"DEBUG_APP: Retorno de ControlShoppingCart: {sucesso}")
 
     if sucesso:
         flash('Produto adicionado/atualizado no carrinho com sucesso!', 'success')
@@ -196,14 +227,13 @@ def adicionar_ao_carrinho():
 
 
 @app.route('/remover_do_carrinho', methods=['POST'])
+@login_required # Garante que apenas usuários logados possam remover do carrinho
 def remover_do_carrinho():
+    """
+    Rota para remover um item do carrinho de compras.
+    """
     id_usuario = session.get('user_id')
 
-    if not id_usuario:
-        flash('Você precisa estar logado para remover itens do carrinho.', 'danger')
-        return redirect(url_for('login'))
-
-    # Pega o ID do produto do formulário (agora o 'name' no HTML é 'produto_id')
     produto_id = request.form.get('produto_id', type=int)
 
     if produto_id is None:
@@ -217,24 +247,25 @@ def remover_do_carrinho():
     else:
         flash('Ocorreu um erro ao remover o produto do carrinho.', 'danger')
 
-    return redirect(url_for('carrinho')) # Redireciona de volta para a página do carrinho
+    return redirect(url_for('carrinho'))
+
 
 @app.route('/atualizar_quantidade_carrinho', methods=['POST'])
+@login_required # Garante que apenas usuários logados possam atualizar o carrinho
 def atualizar_quantidade_carrinho():
+    """
+    Rota para atualizar a quantidade de um item no carrinho.
+    Se a quantidade for 0, o item é removido.
+    """
     id_usuario = session.get('user_id')
 
-    if not id_usuario:
-        flash('Você precisa estar logado para atualizar o carrinho.', 'danger')
-        return redirect(url_for('login'))
-
     produto_id = request.form.get('produto_id', type=int)
-    nova_quantidade = request.form.get('quantidade', type=int) # Novo nome do campo
+    nova_quantidade = request.form.get('quantidade', type=int)
 
-    if produto_id is None or nova_quantidade is None or nova_quantidade < 1:
+    if produto_id is None or nova_quantidade is None or nova_quantidade < 0: # Quantidade pode ser 0 para remover
         flash('Dados inválidos para atualizar a quantidade do carrinho.', 'danger')
         return redirect(url_for('carrinho'))
 
-    # Se a nova quantidade for 0, podemos remover o item (opcional, mas boa prática)
     if nova_quantidade == 0:
         sucesso = ControlShoppingCart.remover_item_carrinho(id_usuario, produto_id)
         if sucesso:
@@ -252,8 +283,11 @@ def atualizar_quantidade_carrinho():
 
 
 @app.route('/post/cadastrarmensagem', methods=['POST'])
-@login_required  # só permite quem está logado comentar
+@login_required
 def cadastrar_comentario():
+    """
+    Rota para cadastrar um novo comentário em um produto.
+    """
     id_usuario = session.get('user_id')
     id_produto = request.form.get('id_produto', type=int)
     comentario_texto = request.form.get('comentario', '').strip()
@@ -272,6 +306,49 @@ def cadastrar_comentario():
     return redirect(url_for('detalhes_vinho', vinho_id=id_produto))
 
 
+@app.route('/finalizar_compra')
+@login_required
+def finalizar_compra():
+    """
+    Rota para a página de finalização de compra/pagamento.
+    Obtém os itens reais do carrinho do usuário e o total.
+    """
+    id_usuario = session.get('user_id')
+    # A verificação de id_usuario já é feita pelo decorador login_required
+    # if not id_usuario:
+    #     flash('Você precisa estar logado para finalizar a compra.', 'danger')
+    #     return redirect(url_for('login'))
+
+    # Obtém os itens do carrinho para calcular o total
+    itens_carrinho = ControlShoppingCart.get_itens_carrinho_por_usuario(id_usuario)
+    total_carrinho = sum(item['preco_unitario'] * item['quantidade'] for item in itens_carrinho)
+
+    # Renderiza a página de simulação de pagamento, passando o total E os itens do carrinho
+    return render_template('payment_simulation.html', itens_carrinho=itens_carrinho, total_carrinho=total_carrinho)
+
+@app.route('/confirmacao_pedido')
+@login_required # Garante que o usuário esteja logado para limpar o carrinho
+def confirmacao_pedido():
+    """
+    Rota para exibir a página de confirmação após um pagamento simulado.
+    Limpa o carrinho do usuário após a confirmação do pedido.
+    """
+    id_usuario = session.get('user_id')
+
+    if id_usuario:
+        # Chama o método para limpar o carrinho do usuário
+        # É crucial que ControlShoppingCart.clear_cart(id_usuario) esteja implementado
+        # na sua classe ControlShoppingCart para remover os itens do banco de dados.
+        ControlShoppingCart.clear_cart(id_usuario)
+        flash('Seu carrinho foi limpo com sucesso após a finalização do pedido.', 'success')
+    else:
+        # Esta condição não deve ser atingida devido ao @login_required, mas serve como salvaguarda.
+        flash('Não foi possível limpar o carrinho. Usuário não identificado.', 'warning')
+
+    return render_template('order_confirmation.html')
+
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=8080, debug=True)
+
